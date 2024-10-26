@@ -1,5 +1,5 @@
 # Образ для сборки
-FROM python:3.12-alpine as builder
+FROM python:3.12-alpine AS builder
 # Установим рабочую директорию
 WORKDIR /app
 # Отключение буферизации вывода Python

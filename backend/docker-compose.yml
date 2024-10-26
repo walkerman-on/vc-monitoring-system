@@ -22,6 +22,9 @@ services:
 
   opcua-server:
     image: opcua-server:latest
+    build:
+      context: .
+      dockerfile: opcua_server/Dockerfile
     restart: unless-stopped
     environment: *common-env-vars
     networks:
@@ -33,14 +36,21 @@ services:
 
   opcua-model:
     image: opcua-model:latest
+    build:
+      context: .
+      dockerfile: opcua_model/Dockerfile
     restart: unless-stopped
     environment: *common-env-vars
     networks:
       - default
     expose:
       - 4840
+
   opcua-controller:
     image: opcua-controller:latest
+    build:
+      context: .
+      dockerfile: opcua_controller/Dockerfile
     restart: unless-stopped
     environment: *common-env-vars
     networks:

@@ -26,3 +26,4 @@
 192.168.65.1 - - [23/Oct/2024:20:32:01 +0000] "GET /api/alarms HTTP/1.1" 403 57 "http://localhost:1881/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
 192.168.65.1 - - [23/Oct/2024:20:32:01 +0000] "GET /api/alarms HTTP/1.1" 403 57 "http://localhost:1881/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
 192.168.65.1 - - [26/Oct/2024:12:22:17 +0000] "GET /api/project HTTP/1.1" 403 57 "http://localhost:1881/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+192.168.65.1 - - [26/Oct/2024:13:07:00 +0000] "GET /api/project HTTP/1.1" 403 57 "http://localhost:1881/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
