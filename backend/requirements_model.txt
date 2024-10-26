@@ -1,0 +1,4 @@
+pyinstaller
+asyncua
+scipy
+numpy

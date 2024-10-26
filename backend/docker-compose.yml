@@ -1,0 +1,56 @@
+version: '3'
+x-env-vars:
+  # Задаём ссылку клиентам для подключения к OPC UA серверу
+  &common-env-vars
+  OPCUA_MAIN_SERVER: "opc.tcp://opcua-server:4840/freeopcua/server/"
+  OPCUA_MAIN_NAMESPACE: "namespace_1"
+
+services:
+  fuxa-scada:
+    image: frangoteam/fuxa:latest
+    restart: unless-stopped
+    environment: *common-env-vars
+    volumes:
+      - './appdata:/usr/src/app/FUXA/server/_appdata'
+      - './db:/usr/src/app/FUXA/server/_db'
+      - './logs:/usr/src/app/FUXA/server/_logs'
+      - './images:/usr/src/app/FUXA/server/_images'
+    networks:
+      - default
+    ports:
+      - '1881:1881'
+
+  opcua-server:
+    image: opcua-server:latest
+    restart: unless-stopped
+    environment: *common-env-vars
+    networks:
+      - default
+    expose:
+      - 4840
+    ports:
+      - '4840:4840'
+
+  opcua-model:
+    image: opcua-model:latest
+    restart: unless-stopped
+    environment: *common-env-vars
+    networks:
+      - default
+    expose:
+      - 4840
+  opcua-controller:
+    image: opcua-controller:latest
+    restart: unless-stopped
+    environment: *common-env-vars
+    networks:
+      - default
+    expose:
+      - 4840
+
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16

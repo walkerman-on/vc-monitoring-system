@@ -1,0 +1,45 @@
+# Образ для сборки
+FROM python:3.12-alpine as builder
+
+# Установим рабочую директорию
+WORKDIR /app
+
+# Отключение буферизации вывода Python
+ENV PYTHONUNBUFFERED=1
+ENV PYFILE=opcua-controller.py
+
+# Установим необходимые инструменты
+RUN apk add --no-cache \
+    py3-pip \
+    build-base \
+    linux-headers \
+    libffi-dev \
+    musl-dev
+
+# Установка зависимостей
+COPY requirements_controller.txt .
+RUN pip install --no-cache-dir -r requirements_controller.txt
+
+# Получение основного файла программы
+COPY $PYFILE .
+RUN pip install pyinstaller && \
+    pyinstaller --onefile --name=pyprog $PYFILE
+
+# Финальный минимальный образ
+FROM scratch
+
+# Установим рабочую директорию
+WORKDIR /app
+
+# Скопируем программу после сборки в рабочую директорию
+COPY --from=builder /app/dist/pyprog /app/pyprog
+
+# Скопируем необходимые библиотеки
+COPY --from=builder /usr/lib/libpython3.12.so /usr/lib/libpython3.12.so
+COPY --from=builder /lib/ld-musl-x86_64.so.1 /lib/ld-musl-x86_64.so.1
+
+# Отключение буферизации вывода Python
+ENV PYTHONUNBUFFERED=1
+
+# Определение команды по умолчанию с полным путем
+CMD ["/app/pyprog"]
