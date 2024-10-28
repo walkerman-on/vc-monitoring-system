@@ -17,11 +17,13 @@ RUN apk add --no-cache \
 	gfortran
 
 # Установка зависимостей
-COPY requirements_model.txt .
+COPY opcua_model/requirements_model.txt .
+COPY opcua_model/opcua-model.py .                 
+
 RUN pip install --no-cache-dir -r requirements_model.txt
 
 # Получение основного файла программы
-COPY $PYFILE .
+COPY opcua_model/$PYFILE .
 RUN pyinstaller --onefile --name=pyprog $PYFILE
 
 # Финальный минимальный образ
@@ -31,7 +33,7 @@ FROM alpine:latest
 WORKDIR /app
 
 # Файл для работы модели сепаратора
-COPY thermo_db.json .
+COPY opcua_model/thermo_db.json .
 
 # Скопируем программу после сборки в рабочую директорию
 COPY --from=builder /app/dist/pyprog /app/pyprog

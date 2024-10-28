@@ -2391,3 +2391,65 @@ Err = (connect ECONNREFUSED 172.28.0.3:4840)
 2024-10-26T13:07:50.606Z [error] 'ns=2;i=26' _startMonitor Error: expecting a valid session here
 2024-10-26T13:07:50.606Z [error] 'ns=2;i=27' _startMonitor Error: expecting a valid session here
 2024-10-26T13:07:50.607Z [error] 'ns=2;i=28' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:19.927Z [error] 'ua_server' retry to connect! 0
+2024-10-28T16:22:19.962Z [error] 'ua_server' connect failure! Error: The connection cannot be established with server opc.tcp://opcua-server:4840/freeopcua/server/ .
+Please check that the server is up and running or your network configuration.
+Err = (connect ECONNREFUSED 172.28.0.4:4840)
+2024-10-28T16:22:19.973Z [error] 'ua_server' try to connect error! Error: The connection cannot be established with server opc.tcp://opcua-server:4840/freeopcua/server/ .
+Please check that the server is up and running or your network configuration.
+Err = (connect ECONNREFUSED 172.28.0.4:4840)
+2024-10-28T16:22:19.974Z [error] 'ua_server' connect error! undefined (0)
+2024-10-28T16:22:43.285Z [error] Token is missing!
+2024-10-28T16:22:43.287Z [error] Token is missing!
+2024-10-28T16:22:56.199Z [error] 'ua_server' connection lost!
+2024-10-28T16:22:56.201Z [error] 'ua_server' connection lost!
+2024-10-28T16:22:56.313Z [error] 'ns=2;i=12' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.314Z [error] 'ns=2;i=13' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.314Z [error] 'ns=2;i=14' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.315Z [error] 'ns=2;i=15' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.315Z [error] 'ns=2;i=16' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.315Z [error] 'ns=2;i=17' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.315Z [error] 'ns=2;i=18' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.316Z [error] 'ns=2;i=19' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.316Z [error] 'ns=2;i=2' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.316Z [error] 'ns=2;i=3' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.316Z [error] 'ns=2;i=4' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.317Z [error] 'ns=2;i=5' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.317Z [error] 'ns=2;i=6' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.317Z [error] 'ns=2;i=7' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.317Z [error] 'ns=2;i=8' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.317Z [error] 'ns=2;i=9' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.318Z [error] 'ns=2;i=10' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.318Z [error] 'ns=2;i=21' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.318Z [error] 'ns=2;i=22' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.318Z [error] 'ns=2;i=23' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.318Z [error] 'ns=2;i=24' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.319Z [error] 'ns=2;i=25' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.319Z [error] 'ns=2;i=26' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.319Z [error] 'ns=2;i=27' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.319Z [error] 'ns=2;i=28' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.518Z [error] 'ns=2;i=12' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.518Z [error] 'ns=2;i=13' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=14' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=15' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=16' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=17' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=18' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=19' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=2' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=3' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=4' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=5' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=6' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=7' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=8' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=9' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=10' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=21' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=22' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=23' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=24' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=25' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=26' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=27' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=28' _startMonitor Error: expecting a valid session here

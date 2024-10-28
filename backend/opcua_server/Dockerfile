@@ -8,11 +8,11 @@ ENV PYFILE=opcua-server.py
 # Установим необходимые инструменты
 RUN apk add --no-cache binutils
 # Установка зависимостей
-COPY requirements_server.txt .
+COPY opcua_server/requirements_server.txt .
 
 RUN pip install --no-cache-dir -r requirements_server.txt
 # Получение основного файла программы
-COPY $PYFILE .
+COPY opcua_server/$PYFILE .
 RUN pyinstaller --onefile --name=pyprog $PYFILE
 
 # Финальный минимальный образ

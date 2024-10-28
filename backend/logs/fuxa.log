@@ -3319,3 +3319,123 @@ Err = (connect ECONNREFUSED 172.28.0.3:4840)
 2024-10-26T13:07:50.606Z [error] 'ns=2;i=26' _startMonitor Error: expecting a valid session here
 2024-10-26T13:07:50.606Z [error] 'ns=2;i=27' _startMonitor Error: expecting a valid session here
 2024-10-26T13:07:50.607Z [error] 'ns=2;i=28' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:19.074Z [info] FUXA V.1.2.1-1988
+2024-10-28T16:22:19.079Z [info] daqstorage: init successful!
+2024-10-28T16:22:19.141Z [info] api: init successful!
+2024-10-28T16:22:19.143Z [info] plugin-installed node-opcua 2.130.0
+2024-10-28T16:22:19.143Z [info] plugin-installed modbus-serial 8.0.16
+2024-10-28T16:22:19.143Z [info] plugin-installed node-bacnet 0.2.4
+2024-10-28T16:22:19.143Z [info] plugin-installed odbc 2.4.9
+2024-10-28T16:22:19.143Z [info] runtime init plugins successful!
+2024-10-28T16:22:19.145Z [info] currentstorage.connected-to _db/currentTagReadings.db database
+2024-10-28T16:22:19.146Z [info] prjstorage.connected-to /usr/src/app/FUXA/server/_appdata/project.fuxap.db database
+2024-10-28T16:22:19.147Z [info] usrstorage.connected /usr/src/app/FUXA/server/_appdata/users.fuxap.db database
+2024-10-28T16:22:19.155Z [info] currentstorage init successful!
+2024-10-28T16:22:19.159Z [info] project.prjstorage-init-successful!
+2024-10-28T16:22:19.159Z [info] runtime init project successful!
+2024-10-28T16:22:19.161Z [info] users.usrstorage-init successful!
+2024-10-28T16:22:19.161Z [info] runtime init users successful!
+2024-10-28T16:22:19.162Z [info] FUXA init in  110ms.
+2024-10-28T16:22:19.186Z [info] daqstorage reset!
+2024-10-28T16:22:19.187Z [info] 'FUXA' data loaded (1)
+2024-10-28T16:22:19.187Z [info] 'FUXA' created
+2024-10-28T16:22:19.684Z [info] 'ua_server' data loaded (25)
+2024-10-28T16:22:19.684Z [info] 'ua_server' created
+2024-10-28T16:22:19.686Z [info] 'FUXA' start
+2024-10-28T16:22:19.687Z [info] 'ua_server' start
+2024-10-28T16:22:19.687Z [info] alarms check start
+2024-10-28T16:22:19.687Z [info] notificator check start
+2024-10-28T16:22:19.687Z [info] scripts.start-checkstatus
+2024-10-28T16:22:19.687Z [info] jobs check start
+2024-10-28T16:22:19.689Z [info] FUXA started!
+2024-10-28T16:22:19.694Z [info] WebServer is running http://127.0.0.1:1881/
+2024-10-28T16:22:19.696Z [info] daqstorage.bind-daq-data '_db/daq-data_0_20241026130637.db' database
+2024-10-28T16:22:19.696Z [info] daqstorage.bind-daq-data '_db/daq-data_0_20241028162219.db' database
+2024-10-28T16:22:19.696Z [info] daqstorage.bind-daq-map '_db/daq-map_0.db' database
+2024-10-28T16:22:19.699Z [info] daqstorage.bind-daq-data '_db/daq-data_d_52cccecb-20cf4dc7_20241028162219.db' database
+2024-10-28T16:22:19.700Z [info] daqstorage.bind-daq-map '_db/daq-map_d_52cccecb-20cf4dc7.db' database
+2024-10-28T16:22:19.700Z [info] daqstorage.bind-daq-data '_db/daq-data_d_52cccecb-20cf4dc7_20241026130637.db' database
+2024-10-28T16:22:19.701Z [info] 'FUXA' restored 0/0 values
+2024-10-28T16:22:19.701Z [info] 'ua_server' restored 0/0 values
+2024-10-28T16:22:19.708Z [info] daqstorage.check-to-archive-db-file '_db/daq-data_0_20241026130637.db'
+2024-10-28T16:22:19.709Z [info] daqstorage.connected-to-map '_db/daq-map_0.db' database
+2024-10-28T16:22:19.717Z [info] daqstorage.connected-to-data '_db/daq-data_0_20241028162219.db' database
+2024-10-28T16:22:19.718Z [info] daqstorage.connected-to-map '_db/daq-map_d_52cccecb-20cf4dc7.db' database
+2024-10-28T16:22:19.718Z [info] daqstorage.check-to-archive-db-file '_db/daq-data_d_52cccecb-20cf4dc7_20241026130637.db'
+2024-10-28T16:22:19.718Z [info] daqstorage.connected-to-data '_db/daq-data_d_52cccecb-20cf4dc7_20241028162219.db' database
+2024-10-28T16:22:19.722Z [info] daqstorage.load-map successful! '0'
+2024-10-28T16:22:19.723Z [info] daqstorage.check-to-archive-db-file '_db/daq-data_0_20241026130637.db' database deleted!
+2024-10-28T16:22:19.724Z [info] daqstorage.load-map successful! 'd_52cccecb-20cf4dc7'
+2024-10-28T16:22:19.725Z [info] daqstorage.check-to-archive-db-file '_db/daq-data_d_52cccecb-20cf4dc7_20241026130637.db' database deleted!
+2024-10-28T16:22:19.927Z [error] 'ua_server' retry to connect! 0
+2024-10-28T16:22:19.962Z [error] 'ua_server' connect failure! Error: The connection cannot be established with server opc.tcp://opcua-server:4840/freeopcua/server/ .
+Please check that the server is up and running or your network configuration.
+Err = (connect ECONNREFUSED 172.28.0.4:4840)
+2024-10-28T16:22:19.973Z [error] 'ua_server' try to connect error! Error: The connection cannot be established with server opc.tcp://opcua-server:4840/freeopcua/server/ .
+Please check that the server is up and running or your network configuration.
+Err = (connect ECONNREFUSED 172.28.0.4:4840)
+2024-10-28T16:22:19.974Z [error] 'ua_server' connect error! undefined (0)
+2024-10-28T16:22:20.702Z [info] alarmsstorage.connected-to /usr/src/app/FUXA/server/_appdata/alarms.fuxap.db database.
+2024-10-28T16:22:20.707Z [info] alarms.alarmstorage-init-successful!
+2024-10-28T16:22:24.728Z [info] 'ua_server' connection
+2024-10-28T16:22:24.735Z [info] 'ua_server' connected!
+2024-10-28T16:22:24.741Z [info] 'ua_server' subscription created!
+2024-10-28T16:22:43.284Z [info] socket.io client connected
+2024-10-28T16:22:43.285Z [error] Token is missing!
+2024-10-28T16:22:43.286Z [info] socket.io client connected
+2024-10-28T16:22:43.287Z [error] Token is missing!
+2024-10-28T16:22:44.600Z [info] api-signin: admin Administrator Account 255
+2024-10-28T16:22:44.603Z [info] socket.io client connected
+2024-10-28T16:22:56.199Z [error] 'ua_server' connection lost!
+2024-10-28T16:22:56.199Z [warn] 'ua_server' Warning => Session closed
+2024-10-28T16:22:56.201Z [error] 'ua_server' connection lost!
+2024-10-28T16:22:56.313Z [error] 'ns=2;i=12' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.314Z [error] 'ns=2;i=13' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.314Z [error] 'ns=2;i=14' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.315Z [error] 'ns=2;i=15' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.315Z [error] 'ns=2;i=16' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.315Z [error] 'ns=2;i=17' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.315Z [error] 'ns=2;i=18' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.316Z [error] 'ns=2;i=19' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.316Z [error] 'ns=2;i=2' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.316Z [error] 'ns=2;i=3' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.316Z [error] 'ns=2;i=4' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.317Z [error] 'ns=2;i=5' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.317Z [error] 'ns=2;i=6' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.317Z [error] 'ns=2;i=7' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.317Z [error] 'ns=2;i=8' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.317Z [error] 'ns=2;i=9' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.318Z [error] 'ns=2;i=10' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.318Z [error] 'ns=2;i=21' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.318Z [error] 'ns=2;i=22' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.318Z [error] 'ns=2;i=23' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.318Z [error] 'ns=2;i=24' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.319Z [error] 'ns=2;i=25' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.319Z [error] 'ns=2;i=26' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.319Z [error] 'ns=2;i=27' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.319Z [error] 'ns=2;i=28' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.518Z [error] 'ns=2;i=12' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.518Z [error] 'ns=2;i=13' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=14' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=15' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=16' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=17' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=18' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=19' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.519Z [error] 'ns=2;i=2' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=3' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=4' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=5' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=6' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=7' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=8' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.520Z [error] 'ns=2;i=9' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=10' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=21' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=22' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=23' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=24' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=25' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=26' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=27' _startMonitor Error: expecting a valid session here
+2024-10-28T16:22:56.521Z [error] 'ns=2;i=28' _startMonitor Error: expecting a valid session here

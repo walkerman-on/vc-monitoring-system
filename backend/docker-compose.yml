@@ -1,4 +1,4 @@
-version: '3'
+# version: '3'
 x-env-vars:
   # Задаём ссылку клиентам для подключения к OPC UA серверу
   &common-env-vars
