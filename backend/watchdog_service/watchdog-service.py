@@ -21,13 +21,21 @@ def check_docker():
         logging.error(f"Ошибка при выполнении команды docker: {e}")
 
 def is_controller_running():
-    """Проверяет, работает ли контроллер."""
-    for proc in psutil.process_iter(['pid', 'name']):
-        if CONTROLLER_NAME in proc.info['name']:
-            logging.info(f"Найден процесс контроллера: {proc.info['name']} (PID: {proc.info['pid']})")
+    client = docker.from_env()
+    try:
+        container = client.containers.get(CONTROLLER_NAME)
+        if container.status == "running":
+            logging.info(f"Контейнер {CONTROLLER_NAME} работает.")
             return True
-    logging.info("Контроллер не запущен.")
-    return False
+        else:
+            logging.info(f"Контейнер {CONTROLLER_NAME} не запущен (статус: {container.status}).")
+            return False
+    except docker.errors.NotFound:
+        logging.error(f"Контейнер {CONTROLLER_NAME} не найден.")
+        return False
+    except Exception as e:
+        logging.error(f"Ошибка при проверке состояния контейнера: {e}")
+        return False
 
 def restart_controller():
     client = docker.from_env()  # Инициализируем клиент Docker
