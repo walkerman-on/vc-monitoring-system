@@ -1,4 +1,3 @@
-# version: '3'
 x-env-vars:
   # Задаём ссылку клиентам для подключения к OPC UA серверу
   &common-env-vars
@@ -6,19 +5,19 @@ x-env-vars:
   OPCUA_MAIN_NAMESPACE: "namespace_1"
 
 services:
-  fuxa-scada:
-    image: frangoteam/fuxa:latest
-    restart: unless-stopped
-    environment: *common-env-vars
-    volumes:
-      - './appdata:/usr/src/app/FUXA/server/_appdata'
-      - './db:/usr/src/app/FUXA/server/_db'
-      - './logs:/usr/src/app/FUXA/server/_logs'
-      - './images:/usr/src/app/FUXA/server/_images'
-    networks:
-      - default
-    ports:
-      - '1881:1881'
+  # fuxa-scada:
+  #   image: frangoteam/fuxa:latest
+  #   restart: unless-stopped
+  #   environment: *common-env-vars
+  #   volumes:
+  #     - './appdata:/usr/src/app/FUXA/server/_appdata'
+  #     - './db:/usr/src/app/FUXA/server/_db'
+  #     - './logs:/usr/src/app/FUXA/server/_logs'
+  #     - './images:/usr/src/app/FUXA/server/_images'
+  #   networks:
+  #     - default
+  #   ports:
+  #     - '1881:1881'
 
   opcua-server:
     image: opcua-server:latest
@@ -29,8 +28,6 @@ services:
     environment: *common-env-vars
     networks:
       - default
-    expose:
-      - 4840
     ports:
       - '4840:4840'
 
@@ -43,8 +40,6 @@ services:
     environment: *common-env-vars
     networks:
       - default
-    expose:
-      - 4840
 
   opcua-controller:
     image: opcua-controller:latest
@@ -55,8 +50,32 @@ services:
     environment: *common-env-vars
     networks:
       - default
-    expose:
-      - 4840
+
+  # Новый сервис для watchdog
+  watchdog_service:
+    image: watchdog-service:latest
+    build:
+      context: .
+      dockerfile: watchdog_service/Dockerfile
+    restart: unless-stopped
+    environment: *common-env-vars
+    networks:
+      - default
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Добавьте эту строку
+
+  # Новый сервис для API-сервера
+  api_server:
+    image: api-server:latest
+    build:
+      context: .
+      dockerfile: api_server/Dockerfile
+    restart: unless-stopped
+    environment: *common-env-vars
+    networks:
+      - default
+    ports:
+      - '8000:8000' # Порт для доступа к API-серверу
 
 networks:
   default:
