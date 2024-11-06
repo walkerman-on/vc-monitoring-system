@@ -76,7 +76,8 @@ services:
       - default
     ports:
       - '8000:8000' # Порт для доступа к API-серверу
-
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Добавление монтирования Docker сокета
 networks:
   default:
     ipam:

@@ -1,7 +1,4 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import subprocess
-import psutil
 import docker
 
 app = FastAPI()
@@ -9,17 +6,27 @@ app = FastAPI()
 # Настройки
 CONTROLLER_NAME = "backend-opcua-controller-1"
 
+# Инициализируем клиент Docker
+
+client = docker.from_env()
+
 def is_controller_running():
-    """Проверяет, работает ли контроллер."""
-    for proc in psutil.process_iter(['pid', 'name']):
-        if CONTROLLER_NAME in proc.info['name']:
-            return True
-    return False
+    """Проверяет, работает ли контейнер контроллера."""
+    try:
+        container = client.containers.get(CONTROLLER_NAME)
+        return container.status == "running"
+    except docker.errors.NotFound:
+        return False
 
 def restart_controller():
-    client = docker.from_env()  # Инициализируем клиент Docker
-    print("Перезапуск контроллера...")
-    client.containers.get(CONTROLLER_NAME).restart()  # Перезапускаем контейнер
+    """Перезапускает контейнер контроллера."""
+    try:
+        container = client.containers.get(CONTROLLER_NAME)
+        container.restart()
+    except docker.errors.NotFound:
+        raise HTTPException(status_code=404, detail="Контейнер не найден")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка при перезапуске контейнера: {e}")
 
 @app.get("/status")
 def get_status():
