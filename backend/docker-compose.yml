@@ -1,0 +1,86 @@
+x-env-vars:
+  # Задаём ссылку клиентам для подключения к OPC UA серверу
+  &common-env-vars
+  OPCUA_MAIN_SERVER: "opc.tcp://opcua-server:4840/freeopcua/server/"
+  OPCUA_MAIN_NAMESPACE: "namespace_1"
+
+services:
+  # fuxa-scada:
+  #   image: frangoteam/fuxa:latest
+  #   restart: unless-stopped
+  #   environment: *common-env-vars
+  #   volumes:
+  #     - './appdata:/usr/src/app/FUXA/server/_appdata'
+  #     - './db:/usr/src/app/FUXA/server/_db'
+  #     - './logs:/usr/src/app/FUXA/server/_logs'
+  #     - './images:/usr/src/app/FUXA/server/_images'
+  #   networks:
+  #     - default
+  #   ports:
+  #     - '1881:1881'
+
+  opcua-server:
+    image: opcua-server:latest
+    build:
+      context: .
+      dockerfile: opcua_server/Dockerfile
+    restart: unless-stopped
+    environment: *common-env-vars
+    networks:
+      - default
+    ports:
+      - '4840:4840'
+
+  opcua-model:
+    image: opcua-model:latest
+    build:
+      context: .
+      dockerfile: opcua_model/Dockerfile
+    restart: unless-stopped
+    environment: *common-env-vars
+    networks:
+      - default
+
+  opcua-controller:
+    image: opcua-controller:latest
+    build:
+      context: .
+      dockerfile: opcua_controller/Dockerfile
+    restart: unless-stopped
+    environment: *common-env-vars
+    networks:
+      - default
+
+  # Новый сервис для watchdog
+  watchdog_service:
+    image: watchdog-service:latest
+    build:
+      context: .
+      dockerfile: watchdog_service/Dockerfile
+    restart: unless-stopped
+    environment: *common-env-vars
+    networks:
+      - default
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Добавьте эту строку
+
+  # Новый сервис для API-сервера
+  api_server:
+    image: api-server:latest
+    build:
+      context: .
+      dockerfile: api_server/Dockerfile
+    restart: unless-stopped
+    environment: *common-env-vars
+    networks:
+      - default
+    ports:
+      - '8000:8000' # Порт для доступа к API-серверу
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Добавление монтирования Docker сокета
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16

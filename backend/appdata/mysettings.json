@@ -1,0 +1,22 @@
+{
+    "language": "en",
+    "uiPort": 1881,
+    "secureEnabled": true,
+    "tokenExpiresIn": "15m",
+    "broadcastAll": true,
+    "smtp": {
+        "host": "",
+        "port": 587,
+        "mailsender": "",
+        "username": ""
+    },
+    "daqstore": {
+        "type": "SQlite",
+        "retention": "year1",
+        "credentials": {}
+    },
+    "alarms": {
+        "retention": "year1"
+    },
+    "logFull": false
+}
