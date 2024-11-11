@@ -4,7 +4,7 @@ import docker
 import logging
 
 # Настройки
-CONTROLLER_NAMES = ["controller-1", "controller-2"]
+CONTROLLER_NAMES = ["backend-opcua-controller-1-1", "backend-opcua-controller-2-1"]
 CHECK_INTERVAL = 5  # Интервал проверки состояния (в секундах)
 
 # Настройка логирования
