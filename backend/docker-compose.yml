@@ -41,25 +41,35 @@ services:
     networks:
       - default
 
-  opcua-controller-1:
+  main-controller-1:
     image: opcua-controller:latest
     build:
       context: .
-      dockerfile: opcua_controller/controller_1/Dockerfile
+      dockerfile: opcua_controller/controller_1/main_controller/Dockerfile
     restart: unless-stopped
     environment: *common-env-vars
     networks:
       - default
 
-  opcua-controller-2:
+  backup-controller-1:
     image: opcua-controller:latest
     build:
       context: .
-      dockerfile: opcua_controller/controller_2/Dockerfile
+      dockerfile: opcua_controller/controller_1/backup_controller/Dockerfile
     restart: unless-stopped
     environment: *common-env-vars
     networks:
       - default
+
+  # opcua-controller-2:
+  #   image: opcua-controller:latest
+  #   build:
+  #     context: .
+  #     dockerfile: opcua_controller/controller_2/Dockerfile
+  #   restart: unless-stopped
+  #   environment: *common-env-vars
+  #   networks:
+  #     - default
 
   # Новый сервис для watchdog
   watchdog_service:

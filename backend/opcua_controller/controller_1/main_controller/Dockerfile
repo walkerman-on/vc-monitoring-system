@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Отключение буферизации вывода Python
 ENV PYTHONUNBUFFERED=1
-ENV PYFILE=controller-1.py
+ENV PYFILE=main-controller.py
 
 # Установим необходимые инструменты
 RUN apk add --no-cache binutils
@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir -r requirements_controller.txt
 COPY opcua_controller /app/opcua_controller
 
 # Получение основного файла программы
-COPY opcua_controller/controller_1/$PYFILE .                       
+COPY opcua_controller/controller_1/main_controller/$PYFILE .                       
 RUN pyinstaller --onefile --hidden-import=asyncua --name=pyprog $PYFILE
 
 # Финальный минимальный образ
