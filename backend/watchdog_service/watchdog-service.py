@@ -4,13 +4,31 @@ import docker
 import logging
 
 # Настройки
-CONTROLLER_NAMES = ["backend-main-controller-1-1"]
+CONTROLLER_NAMES = {
+    "main": "backend-main-controller-1-1",
+    "backup": "backend-backup-controller-1-1"
+}
+
+ACTIVE_CONTROLLER = "main"  # Начальный активный контроллер
 CHECK_INTERVAL = 5  # Интервал проверки состояния (в секундах)
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+def switch_to_backup():
+    """Переключение на резервный контроллер."""
+    global ACTIVE_CONTROLLER
+    ACTIVE_CONTROLLER = "backup"
+    logging.warning("Переключение на резервный контроллер.")
+
+def switch_to_main():
+    """Возврат к основному контроллеру."""
+    global ACTIVE_CONTROLLER
+    ACTIVE_CONTROLLER = "main"
+    logging.info("Основной контроллер восстановлен. Возвращаемся к основному.")
+
 def check_docker():
+    """Проверка доступности Docker на машине."""
     try:
         result = subprocess.run(['docker', '--version'], capture_output=True, text=True, check=True)
         logging.info(f"Docker доступен: {result.stdout.strip()}")
@@ -51,14 +69,26 @@ def restart_controller(controller_name):
         logging.error(f"Ошибка при перезапуске контейнера {controller_name}: {e}")
 
 def monitor_controllers():
-    """Мониторит состояние обоих контроллеров и перезапускает их при необходимости."""
+    """Мониторит состояние контроллеров и перезапускает их при необходимости."""
+    global ACTIVE_CONTROLLER
+
     while True:
-        for controller_name in CONTROLLER_NAMES:
-            if not is_controller_running(controller_name):
-                logging.warning(f"Контроллер {controller_name} отключен. Попытка перезапуска...")
-                restart_controller(controller_name)
+        main_running = is_controller_running(CONTROLLER_NAMES["main"])
+        backup_running = is_controller_running(CONTROLLER_NAMES["backup"])
+
+        if not main_running:
+            logging.warning("Основной контроллер отключен.")
+            if not backup_running:
+                logging.warning("Резервный контроллер тоже неактивен. Перезапускаем оба контроллера.")
+                restart_controller(CONTROLLER_NAMES["main"])
+                restart_controller(CONTROLLER_NAMES["backup"])
             else:
-                logging.info(f"Контроллер {controller_name} работает.")
+                if ACTIVE_CONTROLLER != "backup":
+                    switch_to_backup()  # Переключаемся на резервный контроллер
+        else:
+            if ACTIVE_CONTROLLER == "backup":
+                switch_to_main()  # Возвращаемся к основному контроллеру
+
         time.sleep(CHECK_INTERVAL)
 
 if __name__ == "__main__":
