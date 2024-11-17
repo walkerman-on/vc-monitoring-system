@@ -1,9 +1,14 @@
 import os
 import asyncio
+import logging
 from asyncua import Client
 from opcua_controller.regulators import PID_REGULATOR
 
-# Хранилище последних значений
+# Настройка логирования
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# Хранилище последних значений от основного контроллера
 last_state = {
     "pressure": 0.0,
     "level": 0.0,
@@ -16,11 +21,11 @@ async def main():
     url = os.getenv('OPCUA_BACKUP_SERVER')
     namespace = os.getenv('OPCUA_BACKUP_NAMESPACE')
 
-    print(f"Подключаюсь к резервному серверу {url} и пространству имён {namespace} ...")
+    logger.info(f"Подключаюсь к резервному серверу {url} и пространству имён {namespace} ...")
 
     async with Client(url=url) as client:
         nsidx = await client.get_namespace_index(namespace)
-        print(f"Индекс пространства имен '{namespace}': {nsidx}")
+        logger.info(f"Индекс пространства имен '{namespace}': {nsidx}")
 
         # Ищем ссылки на переменные
         var_uprav1 = await client.nodes.root.get_child(
@@ -75,35 +80,35 @@ async def main():
         pid1 = PID_REGULATOR(dt, kP1, kI1, kD1, OP_MAX, OP_MIN, TAU_FILT)
         pid2 = PID_REGULATOR(dt, kP2, kI2, kD2, OP_MAX, OP_MIN, TAU_FILT)
 
+        # Используем последние данные от основного контроллера
+        PV1 = last_state["pressure"]
+        PV2 = last_state["level"]
+        u1 = last_state["uprav1"]
+        u2 = last_state["uprav2"]
+
+        await var_uprav1.write_value(float(u1))
+        await var_uprav2.write_value(float(u2))
+
         while True:
             try:
-                # Проверяем, активна ли резервная логика
                 mode_pressure1 = await var_mode_pressure1.get_value()
                 mode_level1 = await var_mode_level1.get_value()
 
                 if mode_pressure1 == 0:
                     SP1 = await var_sp_pressure1.get_value()
-                    PV1 = await var_pressure1.get_value()
                     u1 = pid1.control(SP1, PV1)
                     await var_uprav1.write_value(float(u1))
-                    print(f"Резервное управление - Давление: {PV1}, Выход PID: {u1}")
-                    last_state.update({"pressure": PV1, "uprav1": u1})
 
                 if mode_level1 == 0:
                     SP2 = await var_sp_level1.get_value()
-                    PV2 = await var_level1.get_value()
                     u2 = pid2.control(SP2, PV2)
                     await var_uprav2.write_value(float(u2))
-                    print(f"Резервное управление - Уровень: {PV2}, Выход PID: {u2}")
-                    last_state.update({"level": PV2, "uprav2": u2})
 
                 await asyncio.sleep(dt)
+
             except Exception as e:
-                print(f"Ошибка резервного контроллера: {e}")
-                # Используем последние сохраненные значения
-                await var_uprav1.write_value(float(last_state["uprav1"]))
-                await var_uprav2.write_value(float(last_state["uprav2"]))
-                await asyncio.sleep(dt)
+                logger.error(f"Ошибка резервного контроллера: {e}")
+                pass
 
 if __name__ == "__main__":
     asyncio.run(main())

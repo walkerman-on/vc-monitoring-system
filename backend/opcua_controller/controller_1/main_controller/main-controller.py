@@ -1,20 +1,32 @@
 import os
 import asyncio
+import logging
 from asyncua import Client
 from opcua_controller.regulators import PID_REGULATOR
+
+# Настройка логирования
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# Хранилище последних данных для резервного контроллера
+last_state = {
+    "pressure": 0.0,
+    "level": 0.0,
+    "uprav1": 0.0,
+    "uprav2": 0.0,
+}
 
 async def main():
     # Ссылка для подключения
     url = os.getenv('OPCUA_MAIN_SERVER')
-    # Пространство имён для чтения
     namespace = os.getenv('OPCUA_MAIN_NAMESPACE')
 
-    print(f"Подключаюсь по ссылке {url} и к пространству имён {namespace} ...")
+    logger.info(f"Подключаюсь по ссылке {url} и к пространству имён {namespace} ...")
 
     async with Client(url=url) as client:
         # Ищем индекс пространства имен
         nsidx = await client.get_namespace_index(namespace)
-        print(f"Индекс пространства имен '{namespace}': {nsidx}")
+        logger.info(f"Индекс пространства имен '{namespace}': {nsidx}")
 
         # Получаем ссылки на переменные
         var_uprav1 = await client.nodes.root.get_child(
@@ -69,44 +81,46 @@ async def main():
         pid1 = PID_REGULATOR(dt, kP1, kI1, kD1, OP_MAX, OP_MIN, TAU_FILT)
         pid2 = PID_REGULATOR(dt, kP2, kI2, kD2, OP_MAX, OP_MIN, TAU_FILT)
 
-        # Первый шаг регулирования
+        # Инициализация переменных давления и уровня
         PV1 = await var_pressure1.get_value()
-        print(PV1)
+        logger.info(f"Read Pressure: {PV1}")
         u1 = pid1.control(SP1, PV1)
         await var_uprav1.write_value(float(u1))
-        print(f"Read Pressure: {PV1} - Set value {u1}")
+        logger.info(f"Set value {u1}")
 
         PV2 = await var_level1.get_value()
-        print(PV2)
+        logger.info(f"Read Level: {PV2}")
         u2 = pid2.control(SP2, PV2)
         await var_uprav2.write_value(float(u2))
-        print(f"Read Level: {PV2} - Set value {u2}")
+        logger.info(f"Set value {u2}")
 
         while True:
-            mode_pressure1 = await var_mode_pressure1.get_value()
-            mode_level1 = await var_mode_level1.get_value()
+            try:
+                mode_pressure1 = await var_mode_pressure1.get_value()
+                mode_level1 = await var_mode_level1.get_value()
 
-            if mode_pressure1 == 0:
-                SP1 = await var_sp_pressure1.get_value()
-                PV1 = await var_pressure1.get_value()
-                print(PV1)
-                u1 = pid1.control(SP1, PV1)
-                await var_uprav1.write_value(float(u1))
-                print(f"Read Pressure: {PV1} - Set value {u1}")
-            else:
-                pid1.clear()
+                if mode_pressure1 == 0:
+                    SP1 = await var_sp_pressure1.get_value()
+                    PV1 = await var_pressure1.get_value()
+                    u1 = pid1.control(SP1, PV1)
+                    await var_uprav1.write_value(float(u1))
+                    logger.info(f"Давление: {PV1}, Выход PID: {u1}")
+                    last_state.update({"pressure": PV1, "uprav1": u1})
 
-            if mode_level1 == 0:
-                SP2 = await var_sp_level1.get_value()
-                PV2 = await var_level1.get_value()
-                print(PV2)
-                u2 = pid2.control(SP2, PV2)
-                await var_uprav2.write_value(float(u2))
-                print(f"Read Level: {PV2} - Set value {u2}")
-            else:
-                pid2.clear()
+                if mode_level1 == 0:
+                    SP2 = await var_sp_level1.get_value()
+                    PV2 = await var_level1.get_value()
+                    u2 = pid2.control(SP2, PV2)
+                    await var_uprav2.write_value(float(u2))
+                    logger.info(f"Уровень: {PV2}, Выход PID: {u2}")
+                    last_state.update({"level": PV2, "uprav2": u2})
 
-            await asyncio.sleep(dt)
+                await asyncio.sleep(dt)
+
+            except Exception as e:
+                logger.error(f"Ошибка основного контроллера: {e}")
+                # Передаем последние данные в резервный контроллер
+                pass
 
 if __name__ == "__main__":
     asyncio.run(main())
