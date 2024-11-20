@@ -104,7 +104,7 @@ async def main():
                     PV1 = await var_pressure1.get_value()
                     u1 = pid1.control(SP1, PV1)
                     await var_uprav1.write_value(float(u1))
-                    logger.info(f"Давление: {PV1}, Выход PID: {u1}")
+                    logger.info(f"Давление: {PV1}, Управляющее воздействие на клапан (%): {u1}")
                     last_state.update({"pressure": PV1, "uprav1": u1})
 
                 if mode_level1 == 0:
@@ -112,7 +112,7 @@ async def main():
                     PV2 = await var_level1.get_value()
                     u2 = pid2.control(SP2, PV2)
                     await var_uprav2.write_value(float(u2))
-                    logger.info(f"Уровень: {PV2}, Выход PID: {u2}")
+                    logger.info(f"Уровень: {PV2}, Управляющее воздействие на клапан (%): {u2}")
                     last_state.update({"level": PV2, "uprav2": u2})
 
                 await asyncio.sleep(dt)

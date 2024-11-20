@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import docker
 import asyncio
+import os
+from asyncua import Client
 
 app = FastAPI()
 
@@ -18,7 +20,7 @@ app.add_middleware(
 client = docker.from_env()
 
 # Список контейнеров для отслеживания
-CONTROLLER_NAMES = ["backend-opcua-controller-1-1", "backend-opcua-controller-2-1"]
+CONTROLLER_NAMES = ["backend-main-controller-1-1", "backend-backup-controller-1-1"]
 
 def is_controller_running(controller_names):
     """Проверяет, работает ли указанные контейнеры."""
@@ -78,6 +80,45 @@ def restart(controller_name: str):
             raise HTTPException(status_code=400, detail=f"Контроллер {controller_name} уже работает")
     else:
         raise HTTPException(status_code=404, detail=f"Контроллер с именем {controller_name} не найден")
+
+
+# Настройки OPC UA
+OPCUA_SERVER_URL = os.getenv("OPCUA_MAIN_SERVER")
+OPCUA_NAMESPACE = os.getenv("OPCUA_MAIN_NAMESPACE")
+
+async def update_setpoint(controller_name: str, setpoint_type: str, value: float):
+    """Обновляет значение уставки на OPC UA сервере."""
+    async with Client(url=OPCUA_SERVER_URL) as client:
+        try:
+            nsidx = await client.get_namespace_index(OPCUA_NAMESPACE)
+            if setpoint_type == "pressure":
+                var_sp = await client.nodes.root.get_child(
+                    f"0:Objects/{nsidx}:PID_0/{nsidx}:sp_0"
+                )
+            elif setpoint_type == "level":
+                var_sp = await client.nodes.root.get_child(
+                    f"0:Objects/{nsidx}:PID_1/{nsidx}:sp_1"
+                )
+            else:
+                raise ValueError("Недопустимый тип уставки. Используйте 'pressure' или 'level'.")
+
+            await var_sp.write_value(float(value))
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Ошибка обновления уставки: {e}")
+
+@app.post("/setpoint/{controller_name}/{setpoint_type}")
+async def setpoint(controller_name: str, setpoint_type: str, value: float):
+    """Обновляет уставку для указанного контроллера."""
+    if controller_name not in CONTROLLER_NAMES:
+        raise HTTPException(status_code=404, detail=f"Контроллер {controller_name} не найден")
+    try:
+        await update_setpoint(controller_name, setpoint_type, value)
+        return {"message": f"Уставка {setpoint_type} для контроллера {controller_name} обновлена на {value}"}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка: {e}")
+
 
 if __name__ == "__main__":
     import uvicorn
