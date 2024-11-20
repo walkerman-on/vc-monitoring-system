@@ -1,2 +1,3 @@
 pyinstaller
 asyncua
+pickle-mixin
