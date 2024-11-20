@@ -1,3 +1,4 @@
+
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import docker
@@ -45,7 +46,7 @@ def restart_controller(controller_name: str):
 
 @app.websocket("/status")
 async def websocket_status(websocket: WebSocket):
-    """Обрабатывает WebSocket-соединение для передачи статуса контроллеров."""
+    """Обрабатывает WebSocket-соединение для передачи статуса контроллеров и данных с OPC UA."""
     await websocket.accept()
     try:
         while True:
@@ -64,6 +65,10 @@ async def websocket_status(websocket: WebSocket):
             # Отправляем статус на клиент
             await websocket.send_json(status)
             
+            # Получаем данные с контроллеров (давление, уровень и другие параметры)
+            controller_data = await get_controller_data()
+            await websocket.send_json(controller_data)
+
             # Ждём 1 секунду перед повторной проверкой статуса
             await asyncio.sleep(1)
     except WebSocketDisconnect:
@@ -118,6 +123,33 @@ async def setpoint(controller_name: str, setpoint_type: str, value: float):
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Ошибка: {e}")
+
+async def get_controller_data():
+    """Получает данные с контроллеров (давление, уровень и другие параметры)."""
+    async with Client(url=OPCUA_SERVER_URL) as client:
+        try:
+            nsidx = await client.get_namespace_index(OPCUA_NAMESPACE)
+            
+            # Получаем ссылки на переменные
+            var_pressure1 = await client.nodes.root.get_child(
+                f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:Pressure_0"
+            )
+
+            var_level1 = await client.nodes.root.get_child(
+                f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:LiqLevel_0"
+            )
+
+            # Чтение значений с контроллеров
+            pressure = await var_pressure1.get_value()
+            level = await var_level1.get_value()
+
+            # Возвращаем данные с контроллеров
+            return {
+                "pressure": pressure,
+                "level": level,
+            }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Ошибка получения данных с контроллеров: {e}")
 
 
 if __name__ == "__main__":
