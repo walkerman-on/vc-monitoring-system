@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import docker
@@ -56,7 +55,8 @@ async def websocket_status(websocket: WebSocket):
                 "controllers": [
                     {
                         "controller_name": controller_name,
-                        "status": "running" if status else "stopped"
+                        "status": "running" if status else "stopped",
+                        "data": await get_controller_data(controller_name)  # Добавляем данные давления и уровня
                     }
                     for controller_name, status in statuses.items()
                 ]
@@ -65,14 +65,49 @@ async def websocket_status(websocket: WebSocket):
             # Отправляем статус на клиент
             await websocket.send_json(status)
             
-            # Получаем данные с контроллеров (давление, уровень и другие параметры)
-            controller_data = await get_controller_data()
-            await websocket.send_json(controller_data)
-
             # Ждём 1 секунду перед повторной проверкой статуса
             await asyncio.sleep(1)
     except WebSocketDisconnect:
         print(f"WebSocket соединение закрыто")
+
+
+# Изменим функцию get_controller_data, чтобы она принимала имя контроллера и возвращала данные для него
+async def get_controller_data(controller_name: str):
+    """Получает данные с контроллеров (давление, уровень и другие параметры)."""
+    async with Client(url=OPCUA_SERVER_URL) as client:
+        try:
+            nsidx = await client.get_namespace_index(OPCUA_NAMESPACE)
+            
+            # Получаем ссылки на переменные, в зависимости от контроллера
+            if controller_name == "backend-main-controller-1-1":
+                var_pressure = await client.nodes.root.get_child(
+                    f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:Pressure_0"
+                )
+                var_level = await client.nodes.root.get_child(
+                    f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:LiqLevel_0"
+                )
+            elif controller_name == "backend-backup-controller-1-1":
+                var_pressure = await client.nodes.root.get_child(
+                    f"0:Objects/{nsidx}:SEPARATOR_1/{nsidx}:Pressure_1"
+                )
+                var_level = await client.nodes.root.get_child(
+                    f"0:Objects/{nsidx}:SEPARATOR_1/{nsidx}:LiqLevel_1"
+                )
+            else:
+                raise ValueError(f"Контроллер {controller_name} не найден")
+
+            # Чтение значений с контроллеров
+            pressure = await var_pressure.get_value()
+            level = await var_level.get_value()
+
+            # Возвращаем данные с контроллеров
+            return {
+                "pressure": pressure,
+                "level": level,
+            }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Ошибка получения данных с контроллеров: {e}")
+
 
 @app.post("/restart/{controller_name}")
 def restart(controller_name: str):
