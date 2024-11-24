@@ -41,18 +41,18 @@ services:
     networks:
       - default
 
-  backup-controller-1:
-    image: opcua-controller:latest
-    build:
-      context: .
-      dockerfile: opcua_controller/controller_1/backup_controller/Dockerfile
-    restart: unless-stopped
-    environment:
-      <<: *common-env-vars
-      OPCUA_BACKUP_SERVER: ${OPCUA_BACKUP_SERVER}
-      OPCUA_BACKUP_NAMESPACE: ${OPCUA_BACKUP_NAMESPACE}
-    networks:
-      - default
+  # backup-controller-1:
+  #   image: opcua-controller:latest
+  #   build:
+  #     context: .
+  #     dockerfile: opcua_controller/controller_1/backup_controller/Dockerfile
+  #   restart: unless-stopped
+  #   environment:
+  #     <<: *common-env-vars
+  #     OPCUA_BACKUP_SERVER: ${OPCUA_BACKUP_SERVER}
+  #     OPCUA_BACKUP_NAMESPACE: ${OPCUA_BACKUP_NAMESPACE}
+  #   networks:
+  #     - default
 
   watchdog_service:
     image: watchdog-service:latest

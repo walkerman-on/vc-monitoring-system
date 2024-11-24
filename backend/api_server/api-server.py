@@ -49,29 +49,48 @@ async def websocket_status(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
-            # Получаем текущий статус всех контроллеров
             statuses = is_controller_running(CONTROLLER_NAMES)
             status = {
-                "controllers": [
-                    {
-                        "controller_name": controller_name,
-                        "status": "running" if status else "stopped",
-                        "data": await get_controller_data(controller_name)  # Добавляем данные давления и уровня
-                    }
-                    for controller_name, status in statuses.items()
-                ]
+                "controllers": []
             }
+
+            for controller_name, is_running in statuses.items():
+                if is_running:
+                    try:
+                        data = await get_controller_data(controller_name)
+                        controller_status = {
+                            "controller_name": controller_name,
+                            "status": "running",
+                            "data": data
+                        }
+                    except HTTPException as e:
+                        # Обработка ошибки получения данных
+                        controller_status = {
+                            "controller_name": controller_name,
+                            "status": "running",
+                            "data": {"error": str(e.detail)}
+                        }
+                else:
+                    controller_status = {
+                        "controller_name": controller_name,
+                        "status": "stopped",
+                        "data": {}
+                    }
+                status["controllers"].append(controller_status)
 
             # Отправляем статус на клиент
             await websocket.send_json(status)
             
-            # Ждём 1 секунду перед повторной проверкой статуса
+            # Ждем 1 секунду перед повторной проверкой статуса
             await asyncio.sleep(1)
+
     except WebSocketDisconnect:
         print(f"WebSocket соединение закрыто")
+    except Exception as e:
+        print(f"Ошибка при обработке WebSocket: {e}")
+        await websocket.send_text(f"Ошибка при обработке запроса: {e}")
+        await websocket.close()
 
-
-# Изменим функцию get_controller_data, чтобы она принимала имя контроллера и возвращала данные для него
 async def get_controller_data(controller_name: str):
     """Получает данные с контроллеров (давление, уровень и другие параметры)."""
     async with Client(url=OPCUA_SERVER_URL) as client:
@@ -106,8 +125,8 @@ async def get_controller_data(controller_name: str):
                 "level": level,
             }
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Ошибка получения данных с контроллеров: {e}")
-
+            # Выводим подробную информацию об ошибке
+            raise HTTPException(status_code=500, detail=f"Ошибка получения данных с контроллеров ({controller_name}): {str(e)}")
 
 @app.post("/restart/{controller_name}")
 def restart(controller_name: str):
@@ -158,34 +177,6 @@ async def setpoint(controller_name: str, setpoint_type: str, value: float):
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Ошибка: {e}")
-
-async def get_controller_data():
-    """Получает данные с контроллеров (давление, уровень и другие параметры)."""
-    async with Client(url=OPCUA_SERVER_URL) as client:
-        try:
-            nsidx = await client.get_namespace_index(OPCUA_NAMESPACE)
-            
-            # Получаем ссылки на переменные
-            var_pressure1 = await client.nodes.root.get_child(
-                f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:Pressure_0"
-            )
-
-            var_level1 = await client.nodes.root.get_child(
-                f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:LiqLevel_0"
-            )
-
-            # Чтение значений с контроллеров
-            pressure = await var_pressure1.get_value()
-            level = await var_level1.get_value()
-
-            # Возвращаем данные с контроллеров
-            return {
-                "pressure": pressure,
-                "level": level,
-            }
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Ошибка получения данных с контроллеров: {e}")
-
 
 if __name__ == "__main__":
     import uvicorn
