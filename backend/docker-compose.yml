@@ -1,24 +1,14 @@
 x-env-vars:
-  # Задаём ссылку клиентам для подключения к OPC UA серверу
+  # Общие переменные окружения для всех сервисов
   &common-env-vars
   OPCUA_MAIN_SERVER: "opc.tcp://opcua-server:4840/freeopcua/server/"
   OPCUA_MAIN_NAMESPACE: "namespace_1"
 
-services:
-  # fuxa-scada:
-  #   image: frangoteam/fuxa:latest
-  #   restart: unless-stopped
-  #   environment: *common-env-vars
-  #   volumes:
-  #     - './appdata:/usr/src/app/FUXA/server/_appdata'
-  #     - './db:/usr/src/app/FUXA/server/_db'
-  #     - './logs:/usr/src/app/FUXA/server/_logs'
-  #     - './images:/usr/src/app/FUXA/server/_images'
-  #   networks:
-  #     - default
-  #   ports:
-  #     - '1881:1881'
+  # Добавлены переменные для резервного сервера
+  OPCUA_BACKUP_SERVER: "opc.tcp://opcua-server:4840/freeopcua/server/"
+  OPCUA_BACKUP_NAMESPACE: "namespace_1"
 
+services:
   opcua-server:
     image: opcua-server:latest
     build:
@@ -57,21 +47,13 @@ services:
       context: .
       dockerfile: opcua_controller/controller_1/backup_controller/Dockerfile
     restart: unless-stopped
-    environment: *common-env-vars
+    environment:
+      <<: *common-env-vars
+      OPCUA_BACKUP_SERVER: ${OPCUA_BACKUP_SERVER}
+      OPCUA_BACKUP_NAMESPACE: ${OPCUA_BACKUP_NAMESPACE}
     networks:
       - default
 
-  # opcua-controller-2:
-  #   image: opcua-controller:latest
-  #   build:
-  #     context: .
-  #     dockerfile: opcua_controller/controller_2/Dockerfile
-  #   restart: unless-stopped
-  #   environment: *common-env-vars
-  #   networks:
-  #     - default
-
-  # Новый сервис для watchdog
   watchdog_service:
     image: watchdog-service:latest
     build:
@@ -85,7 +67,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock # Добавлено для доступа к Docker
     container_name: watchdog-service
 
-  # Новый сервис для API-сервера
   api_server:
     image: api-server:latest
     build:
