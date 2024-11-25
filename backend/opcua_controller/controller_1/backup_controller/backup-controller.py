@@ -18,8 +18,8 @@ last_state = {
 
 async def main():
     # Ссылка и пространство имён для подключения
-    url = os.getenv('OPCUA_BACKUP_SERVER', 'opc.tcp://127.0.0.1:4840')
-    namespace = os.getenv('OPCUA_BACKUP_NAMESPACE', 'http://example.org')
+    url = os.getenv('OPCUA_BACKUP_SERVER')
+    namespace = os.getenv('OPCUA_BACKUP_NAMESPACE')
 
 
     logger.info(f"Подключаюсь к резервному серверу {url} и пространству имён {namespace} ...")

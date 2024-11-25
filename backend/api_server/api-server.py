@@ -64,7 +64,6 @@ async def websocket_status(websocket: WebSocket):
                             "data": data
                         }
                     except HTTPException as e:
-                        # Обработка ошибки получения данных
                         controller_status = {
                             "controller_name": controller_name,
                             "status": "running",
@@ -117,9 +116,40 @@ async def get_controller_data(controller_name: str):
             var_level = await client.nodes.root.get_child(
                 f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:LiqLevel_0"
             )
+            sp_pressure = await client.nodes.root.get_child(
+                f"0:Objects/{nsidx}:PID_0/{nsidx}:sp_0"
+            )
+            sp_level = await client.nodes.root.get_child(
+                f"0:Objects/{nsidx}:PID_1/{nsidx}:sp_1"
+            )
+            upr1 = await client.nodes.root.get_child(
+                f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:Input2_0"
+            )
+            upr2 = await client.nodes.root.get_child(
+                f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:Input3_0"
+            )
+
+            # Считываем данные с OPC UA сервера
             pressure = await var_pressure.get_value()
             level = await var_level.get_value()
-            return {"pressure": pressure, "level": level}
+            pressure_setpoint = await sp_pressure.get_value()
+            level_setpoint = await sp_level.get_value()
+            upr1_value = await upr1.get_value()
+            upr2_value = await upr2.get_value()
+
+            # Возвращаем все данные, включая управляющие воздействия
+            return {
+                "pressure": pressure,
+                "level": level,
+                "setpoints": {
+                    "pressure": pressure_setpoint,
+                    "level": level_setpoint
+                },
+                "control": {
+                    "uprav1": upr1_value,
+                    "uprav2": upr2_value
+                }
+            }
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Ошибка получения данных: {str(e)}")
 
