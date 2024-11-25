@@ -68,7 +68,13 @@ async def websocket_status(websocket: WebSocket):
                         controller_status = {
                             "controller_name": controller_name,
                             "status": "running",
-                            "data": {"error": str(e.detail)}
+                            "data": {"error": f"Ошибка получения данных: {e.detail}"}
+                        }
+                    except Exception as e:
+                        controller_status = {
+                            "controller_name": controller_name,
+                            "status": "running",
+                            "data": {"error": f"Неизвестная ошибка: {str(e)}"}
                         }
                 else:
                     controller_status = {
@@ -90,6 +96,7 @@ async def websocket_status(websocket: WebSocket):
         print(f"Ошибка при обработке WebSocket: {e}")
         await websocket.send_text(f"Ошибка при обработке запроса: {e}")
         await websocket.close()
+
 
 async def get_controller_data(controller_name: str):
     """Получает данные с контроллеров (давление, уровень и другие параметры)."""
