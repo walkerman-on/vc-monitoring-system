@@ -99,41 +99,29 @@ async def websocket_status(websocket: WebSocket):
 
 
 async def get_controller_data(controller_name: str):
-    """Получает данные с контроллеров (давление, уровень и другие параметры)."""
-    async with Client(url=OPCUA_SERVER_URL) as client:
-        try:
-            nsidx = await client.get_namespace_index(OPCUA_NAMESPACE)
-            
-            # Получаем ссылки на переменные, в зависимости от контроллера
-            if controller_name == "backend-main-controller-1-1":
-                var_pressure = await client.nodes.root.get_child(
-                    f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:Pressure_0"
-                )
-                var_level = await client.nodes.root.get_child(
-                    f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:LiqLevel_0"
-                )
-            elif controller_name == "backend-backup-controller-1-1":
-                var_pressure = await client.nodes.root.get_child(
-                    f"0:Objects/{nsidx}:SEPARATOR_1/{nsidx}:Pressure_1"
-                )
-                var_level = await client.nodes.root.get_child(
-                    f"0:Objects/{nsidx}:SEPARATOR_1/{nsidx}:LiqLevel_1"
-                )
-            else:
-                raise ValueError(f"Контроллер {controller_name} не найден")
+    if controller_name == "backend-main-controller-1-1":
+        server_url = OPCUA_SERVER_URL
+        namespace = OPCUA_NAMESPACE
+    elif controller_name == "backend-backup-controller-1-1":
+        server_url = OPCUA_BACKUP_SERVER_URL
+        namespace = OPCUA_BACKUP_NAMESPACE
+    else:
+        raise ValueError(f"Контроллер {controller_name} не найден")
 
-            # Чтение значений с контроллеров
+    async with Client(url=server_url) as client:
+        try:
+            nsidx = await client.get_namespace_index(namespace)
+            var_pressure = await client.nodes.root.get_child(
+                f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:Pressure_0"
+            )
+            var_level = await client.nodes.root.get_child(
+                f"0:Objects/{nsidx}:SEPARATOR_0/{nsidx}:LiqLevel_0"
+            )
             pressure = await var_pressure.get_value()
             level = await var_level.get_value()
-
-            # Возвращаем данные с контроллеров
-            return {
-                "pressure": pressure,
-                "level": level,
-            }
+            return {"pressure": pressure, "level": level}
         except Exception as e:
-            # Выводим подробную информацию об ошибке
-            raise HTTPException(status_code=500, detail=f"Ошибка получения данных с контроллеров ({controller_name}): {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Ошибка получения данных: {str(e)}")
 
 @app.post("/restart/{controller_name}")
 def restart(controller_name: str):
@@ -151,6 +139,9 @@ def restart(controller_name: str):
 # Настройки OPC UA
 OPCUA_SERVER_URL = os.getenv("OPCUA_MAIN_SERVER")
 OPCUA_NAMESPACE = os.getenv("OPCUA_MAIN_NAMESPACE")
+OPCUA_BACKUP_SERVER_URL = os.getenv("OPCUA_BACKUP_SERVER")
+OPCUA_BACKUP_NAMESPACE = os.getenv("OPCUA_BACKUP_NAMESPACE")
+
 
 async def update_setpoint(controller_name: str, setpoint_type: str, value: float):
     """Обновляет значение уставки на OPC UA сервере."""
