@@ -59,19 +59,6 @@ async def main():
             except Exception as e:
                 logging.error(f"Ошибка при добавлении объекта PID_{n}: {e}")
 
-        # Добавляем метод
-        try:
-            await server.nodes.objects.add_method(
-                ua.NodeId("ServerMethod", idx),
-                ua.QualifiedName("ServerMethod", idx),
-                func,
-                [ua.VariantType.String],
-                [ua.VariantType.String],
-            )
-            logging.info("Method 'ServerMethod' added.")
-        except Exception as e:
-            logging.error(f"Ошибка при добавлении метода: {e}")
-
         # Запуск сервера
         async with server:
             logging.info("Server is running...")
@@ -80,6 +67,7 @@ async def main():
 
     except Exception as e:
         logging.error(f"Ошибка в процессе работы сервера: {e}")
+
 
 if __name__ == "__main__":
     asyncio.run(main(), debug=True)

@@ -21,6 +21,7 @@ async def main():
     url = os.getenv('OPCUA_BACKUP_SERVER')
     namespace = os.getenv('OPCUA_BACKUP_NAMESPACE')
 
+
     logger.info(f"Подключаюсь к резервному серверу {url} и пространству имён {namespace} ...")
 
     async with Client(url=url) as client:
