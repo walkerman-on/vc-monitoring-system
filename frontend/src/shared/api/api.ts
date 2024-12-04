@@ -11,6 +11,6 @@ enum IENDPOINTS {
 }
 export const ENDPOINTS = {
 	controller_status: "/status",
-	controller_restart: "/restart",
+	controller_restart: "/restart/backend-main-controller-1-1",
 	change_setpoint: "setpoint/backend-main-controller-1-1/level?value=4.8",
 }

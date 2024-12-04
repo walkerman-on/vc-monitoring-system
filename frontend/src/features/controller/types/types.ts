@@ -1,4 +1,4 @@
-export interface IController {
+export interface IControllerInfo {
 	controller_name: string,
 	status: string,
 	data: IControllerData

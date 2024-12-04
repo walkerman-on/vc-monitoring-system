@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import { IController } from 'features/controller';
+import { IControllerInfo } from 'features/controller';
 import { Button } from "shared/ui/button"
 
 interface IControllerData {
-	info: IController,
+	info: IControllerInfo,
 	changeSetPoint: () => void
 }
 
